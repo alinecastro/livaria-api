@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -35,6 +36,36 @@ public class LivroController {
         return modelMapper.map(livro, LivroDTO.class);
     }
 
+    @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public LivroDTO getDetalheDoLivro(@PathVariable Long id) {
+        return livroService.findById(id)
+                .map(livro -> modelMapper.map(livro, LivroDTO.class))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletarLivro(@PathVariable Long id) {
+        Livro livro = livroService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        livroService.deletarLivro(livro);
+    }
+
+    @PutMapping("{id}")
+    public LivroDTO atualizarLivro(@PathVariable Long id, @RequestBody @Valid LivroDTO livroDTO) {
+        return livroService.findById(id)
+                .map(livro -> {
+
+                    livro.setAutor(livroDTO.getAutor());
+                    livro.setTitulo(livroDTO.getTitulo());
+                    livro = livroService.atualizarLivro(livro);
+                    return modelMapper.map(livro, LivroDTO.class);
+
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors handleValidationExceptions(MethodArgumentNotValidException exception) {
@@ -47,4 +78,6 @@ public class LivroController {
     public ApiErrors handleBusinessException(BusinessException e) {
         return new ApiErrors(e);
     }
+
+    //  @ExceptionHandler(ResourceNotFoundException )
 }

@@ -12,6 +12,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import sun.misc.LRUCache;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Optional;
+
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @DataJpaTest
@@ -53,6 +58,55 @@ public class LivroRepositoryTest {
         //verificacao
         Assertions.assertThat(exists).isFalse();
 
+    }
+
+
+    @Test
+    @DisplayName("Deve obter um livro pelo id")
+    public void findByIdTest() {
+        //cenario
+        Livro livro = criarLivro();
+        entityManager.persist(livro);
+
+        //execucao
+        Optional<Livro> livroLocalizado = repository.findById(livro.getId());
+
+        //verificacao
+        Assertions.assertThat(livroLocalizado.isPresent()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Deve salvar um livro")
+    public void salvarLivro() {
+        //cenario
+        Livro livro = criarLivro();
+        //execucao
+        Livro livroSalvo = repository.save(livro);
+        //verificacao
+        Assertions.assertThat(livroSalvo.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Deve deletar um livro")
+    public void deleteLivro() throws ParseException {
+        String sDate1 = "31/12/1998";
+        System.out.println("date original " + sDate1);
+        Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
+        System.out.println(date1 + " data formatada");
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        java.sql.Date data = new java.sql.Date(format.parse(sDate1).getTime());
+        System.out.println(data + " data formatada nova");
+        //cenario
+/*        Livro livro = criarLivro();
+        entityManager.persist(livro);
+        Livro livroSalvo = entityManager.find(Livro.class, livro.getId());
+        //execucao
+        repository.delete(livroSalvo);
+
+        //verificacao
+        Livro livroDeletado = entityManager.find(Livro.class, livro.getId());
+        Assertions.assertThat(livroDeletado).isNull();
+    */
     }
 
     private Livro criarLivro() {
