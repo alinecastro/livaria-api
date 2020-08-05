@@ -37,7 +37,7 @@ public class LivroRepositoryTest {
     @DisplayName("Deve retornar true quando o isbn já existir na base")
     public void deveRetornarTrueQuandoIsbnJaExistir() {
         //cenario
-        String isbn = "121";
+        String isbn = "1212";
         entityManager.persist(criarLivro());
         //execucao
         boolean exists = repository.existsByIsbn(isbn);
