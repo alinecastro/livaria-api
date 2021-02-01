@@ -41,6 +41,7 @@ public class LivroControllerTest {
 
     @Test
     @DisplayName("Deve cadastrar um livro com sucesso.")
+    //testar criaçao de livros
     public void criarLivroTest() throws Exception {
         LivroDTO dto = criarNovoLivroDto();
 
