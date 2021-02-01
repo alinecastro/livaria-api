@@ -41,7 +41,7 @@ public class LivroControllerTest {
 
     @Test
     @DisplayName("Deve cadastrar um livro com sucesso.")
-    public void criarLivroTest() throws Exception {
+     public void criarLivroTest() throws Exception {
         LivroDTO dto = criarNovoLivroDto();
 
         Livro livro = Livro.builder().id(1L).autor("aline").titulo("java").isbn("121").build();
